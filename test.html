@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ca Dahie</title>
+  
+  <!-- Font Inter & Icon FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <style>
+    :root {
+      /* Theme 1: Xanh */
+      --primary-color: #00f2fe;
+      --glow-color: rgba(0, 242, 254, 0.35);
+      --border-color: rgba(0, 242, 254, 0.4);
+    }
+
+    /* Theme 2: Hồng */
+    body.theme-pink {
+      --primary-color: #ff758c;
+      --glow-color: rgba(255, 117, 140, 0.4);
+      --border-color: rgba(255, 117, 140, 0.5);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px 16px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Lớp nền xử lý hiệu ứng chuyển ảnh mượt */
+    .bg-layer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      transition: opacity 1.5s ease-in-out;
+      z-index: -2;
+    }
+
+    #bg1 {
+      background-image: linear-gradient(rgba(13, 14, 21, 0.5), rgba(5, 5, 8, 0.6)), url('nen1.png');
+      opacity: 1;
+    }
+
+    #bg2 {
+      background-image: linear-gradient(rgba(21, 13, 18, 0.5), rgba(15, 5, 12, 0.6)), url('nen2.png');
+      opacity: 0;
+    }
+
+    /* Khung chứa giao diện */
+    .container {
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      background: transparent;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      border: none;
+      padding: 20px 0;
+      box-shadow: none;
+    }
+
+    /* Header Profile */
+    .profile-header {
+      margin-bottom: 28px;
+    }
+
+    .avatar-wrapper {
+      position: relative;
+      width: 96px;
+      height: 96px;
+      margin: 0 auto 16px;
+    }
+
+    .avatar {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--primary-color);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 15px var(--glow-color);
+      transition: border-color 1.5s ease, box-shadow 1.5s ease;
+    }
+
+    /* --- CẤU HÌNH CÁC LỚP STICKER --- */
+    .sticker-group {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      transition: opacity 1.5s ease-in-out;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .sticker-set1 { opacity: 1; }
+    .sticker-set2 { opacity: 0; }
+
+    .sticker {
+      position: absolute;
+    }
+
+    .sticker-left {
+      top: -16px;
+      left: -18px;
+      width: 55px;
+      height: auto;
+      transform: rotate(-15deg);
+    }
+
+    .sticker-right {
+      top: -14px;
+      right: -16px;
+      width: 52px;
+      height: auto;
+      transform: rotate(15deg);
+    }
+
+    .username {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+
+    .bio {
+      font-size: 14px;
+      color: #e2e8f0;
+      font-weight: 400;
+      text-shadow: 0 1px 5px rgba(0,0,0,0.5);
+    }
+
+    /* Danh sách các nút bấm */
+    .links-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .btn-link {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-radius: 16px;
+      text-decoration: none;
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 15px;
+      background: rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid var(--border-color);
+      transition: all 0.5s ease;
+      overflow: hidden;
+    }
+
+    .btn-link::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(90deg, var(--glow-color), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 0;
+    }
+
+    .btn-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .btn-icon {
+      font-size: 20px;
+      width: 24px;
+      text-align: center;
+      color: var(--primary-color);
+      transition: color 1.5s ease;
+    }
+
+    .arrow-icon {
+      position: relative;
+      z-index: 1;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+      transition: transform 0.3s ease, color 0.3s ease;
+    }
+
+    .btn-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 15px var(--glow-color);
+    }
+
+    .btn-link:hover .arrow-icon {
+      transform: translateX(4px);
+      color: #ffffff;
+    }
+
+    .btn-link:hover::before {
+      opacity: 1;
+    }
+
+    .btn-link:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    .footer {
+      margin-top: 32px;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.5);
+      text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Lớp nền ảnh -->
+  <div id="bg1" class="bg-layer"></div>
+  <div id="bg2" class="bg-layer"></div>
+
+  <div class="container">
+    <!-- Header Profiles -->
+    <div class="profile-header">
+      <div class="avatar-wrapper">
+        
+        <!-- Bộ Sticker 1 (Đi cùng Nền 1) -->
+        <div id="stkGroup1" class="sticker-group sticker-set1">
+          <img src="stk1.png" alt="Sticker 1" class="sticker sticker-left">
+          <img src="stk11.png" alt="Sticker 11" class="sticker sticker-right">
+        </div>
+
+        <!-- Bộ Sticker 2 (Đi cùng Nền 2) -->
+        <div id="stkGroup2" class="sticker-group sticker-set2">
+          <img src="stk2.png" alt="Sticker 2" class="sticker sticker-left">
+          <img src="stk22.png" alt="Sticker 22" class="sticker sticker-right">
+        </div>
+
+        <img src="avt.png" alt="Avatar Ca Dahie" class="avatar">
+      </div>
+      <h1 class="username">Ca Dahie</h1>
+      <p class="bio">Các trang cá nhân của tôi.</p>
+    </div>
+
+    <!-- Danh Sách Nút Mạng Xã Hội -->
+    <div class="links-list">
+      
+      <!-- YouTube -->
+      <a href="https://youtube.com/@cadahievn" class="btn-link" target="_blank">
+        <div class="btn-content">
+          <i class="fa-brands fa-youtube btn-icon"></i>
+          <span>YouTube</span>
+        </div>
+        <i class="fa-solid fa-chevron-right arrow-icon"></i>
+      </a>
+
+      <!-- TikTok -->
+      <a href="https://www.tiktok.com/@cadahie" class="btn-link" target="_blank">
+        <div class="btn-content">
+          <i class="fa-brands fa-tiktok btn-icon"></i>
+          <span>TikTok</span>
+        </div>
+        <i class="fa-solid fa-chevron-right arrow-icon"></i>
+      </a>
+
+      <!-- Facebook -->
+      <a href="https://www.facebook.com/share/1B91LWY47c/" class="btn-link" target="_blank">
+        <div class="btn-content">
+          <i class="fa-brands fa-facebook btn-icon"></i>
+          <span>Facebook</span>
+        </div>
+        <i class="fa-solid fa-chevron-right arrow-icon"></i>
+      </a>
+
+      <!-- Instagram -->
+      <a href="https://www.instagram.com/ca0.dhiea" class="btn-link" target="_blank">
+        <div class="btn-content">
+          <i class="fa-brands fa-instagram btn-icon"></i>
+          <span>Instagram</span>
+        </div>
+        <i class="fa-solid fa-chevron-right arrow-icon"></i>
+      </a>
+
+      <!-- Threads -->
+      <a href="https://www.threads.com/@kca.dhie" class="btn-link" target="_blank">
+        <div class="btn-content">
+          <i class="fa-brands fa-threads btn-icon"></i>
+          <span>Threads</span>
+        </div>
+        <i class="fa-solid fa-chevron-right arrow-icon"></i>
+      </a>
+
+      <!-- HoYoLAB -->
+      <a href="https://www.hoyolab.com/accountCenter/postList?id=88408041" class="btn-link" target="_blank">
+        <div class="btn-content">
+          <i class="fa-solid fa-gamepad btn-icon"></i>
+          <span>HoYoLAB Genshin Impact</span>
+        </div>
+        <i class="fa-solid fa-chevron-right arrow-icon"></i>
+      </a>
+
+    </div>
+
+    <div class="footer">
+      <p>•Made by Ca Dahie• Gmail: cadahievn@gmail.com</p>
+    </div>
+  </div>
+
+  <script>
+    const bg1 = document.getElementById('bg1');
+    const bg2 = document.getElementById('bg2');
+    const stkGroup1 = document.getElementById('stkGroup1');
+    const stkGroup2 = document.getElementById('stkGroup2');
+    const body = document.body;
+
+    let currentTheme = 1;
+
+    setInterval(() => {
+      if (currentTheme === 1) {
+        bg1.style.opacity = '0';
+        bg2.style.opacity = '1';
+        
+        stkGroup1.style.opacity = '0';
+        stkGroup2.style.opacity = '1';
+
+        body.classList.add('theme-pink');
+        currentTheme = 2;
+      } else {
+        bg1.style.opacity = '1';
+        bg2.style.opacity = '0';
+
+        stkGroup1.style.opacity = '1';
+        stkGroup2.style.opacity = '0';
+
+        body.classList.remove('theme-pink');
+        currentTheme = 1;
+      }
+    }, 10000);
+  </script>
+
+</body>
+</html>
